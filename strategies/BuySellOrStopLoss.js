@@ -108,7 +108,7 @@ strat.check = function() {
     log.info("Going to sell!");
     this.advice("short");
     this.trend.lastOperation = 'sell';
-    this.tradeCount++;
+    this.trend.tradeCount++;
   }
 
   else if(this.trend.buy){
@@ -116,7 +116,7 @@ strat.check = function() {
     log.info("Going to buy!");
     this.advice("long");
     this.trend.lastOperation = 'buy';
-    this.tradeCount++;
+    this.trend.tradeCount++;
   }
 
   else{
