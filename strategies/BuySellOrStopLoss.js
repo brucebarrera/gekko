@@ -16,7 +16,7 @@ var strat = {};
 // Prepare everything our method needs
 strat.init = function() {
   this.input = 'candle';
-  this.requiredHistory = 0;
+  this.requiredHistory = 1;
 
   this.trend  ={
     sell : false,
@@ -25,7 +25,7 @@ strat.init = function() {
     tradeCount: 0
   };
 
-  //Doing this
+  //Determine if we first want to buy or sell
   if(this.settings.firstTrade === 'buy') {
     this.trend.lastOperation = 'sell';
   }
@@ -51,7 +51,7 @@ strat.update = function(candle) {
 
   if(stopLoss.pauseOnStopLoss){
 
-    log.info("Stop Loss occurred. Won't execute a buy or sell");
+    log.info("Stop Loss pause enabled. Won't execute another buy or sell");
     return;
   }
 
