@@ -1,6 +1,6 @@
 tradeLimit = 99999999999999
-# Uncomment to enable trade order buy or sell
-# firstTrade = "buy"
+# Tell the bot if the first trade should be a buy or sell
+ firstTrade = "buy"
 
 [sell]
 enabled = false

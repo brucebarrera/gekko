@@ -22,6 +22,7 @@ strat.init = function() {
     sell : false,
     buy : false,
     lastOperation : null,
+    stopLossExecuted: false,
     tradeCount: 0
   };
 
@@ -42,6 +43,10 @@ strat.update = function(candle) {
     return;
   }
 
+  //Resetting trend on new candle price:
+  this.trend.buy = false;
+  this.trend.sell = false;
+
   log.info("Candle close price: "+candle.close);
 
   var sell = this.settings.sell;
@@ -49,8 +54,7 @@ strat.update = function(candle) {
   var buy = this.settings.buy;
   var buyRange = this.settings.buyRange;
 
-  if(stopLoss.pauseOnStopLoss){
-
+  if(stopLoss.pauseOnStopLoss && this.trend.stopLossExecuted){
     log.info("Stop Loss pause enabled. Won't execute another buy or sell");
     return;
   }
@@ -70,6 +74,7 @@ strat.update = function(candle) {
     else if (stopLoss.enabled && candle.close <= stopLoss.lessThanOrEqualTo) {
       log.info("STOP LOSS REACHED :" + stopLoss.lessThanOrEqualTo + " CANDLE CLOSE: " + candle.close);
       this.trend.sell = true;
+      this.trend.stopLossExecuted = true;
     }
 
   }
