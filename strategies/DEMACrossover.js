@@ -10,7 +10,7 @@ method.init = function() {
   this.name = 'DEMACrossover';
 
   this.currentTrend;
-  this.requiredHistory = this.tradingAdvisor.historySize;
+  this.requiredHistory = 0;
 
   // define the indicators we need
   //this.addIndicator('dema', 'DEMA', this.settings);
@@ -25,6 +25,8 @@ method.init = function() {
 
   this.addTalibIndicator('shortDEMA', 'dema', {optInTimePeriod : 13});
   this.addTalibIndicator('longDEMA', 'dema', {optInTimePeriod : 34});
+
+  log.debug(this.name+' Strategy initialized');
 
 }
 
@@ -56,8 +58,6 @@ method.check = function(candle) {
   var price = candle.close;
 
   var message = '@ ' + price.toFixed(8);
-
-
 
 
   //DEMA Golden Cross
