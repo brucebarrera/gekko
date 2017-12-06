@@ -23,8 +23,11 @@ method.init = function() {
     this.currentTrend = 'up';
   }
 
-  this.addTalibIndicator('shortDEMA', 'dema', {optInTimePeriod : 13});
-  this.addTalibIndicator('longDEMA', 'dema', {optInTimePeriod : 34});
+  log.debug("Short DEMA size: "+this.settings.shortSize);
+  log.debug("Long DEMA size: "+this.settings.longSize);
+
+  this.addTalibIndicator('shortDEMA', 'dema', {optInTimePeriod : this.settings.shortSize});
+  this.addTalibIndicator('longDEMA', 'dema', {optInTimePeriod : this.settings.longSize});
 
   log.debug(this.name+' Strategy initialized');
 

@@ -6,5 +6,8 @@
 # Tell the bot if the first trade should be a buy or sell
 firstTrade = "buy"
 
+shortSize = 13
+
+longSize = 34
 
 [demaCrossover]
