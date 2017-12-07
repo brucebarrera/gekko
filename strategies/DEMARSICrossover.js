@@ -7,7 +7,7 @@ var method = {};
 
 // prepare everything our method needs
 method.init = function() {
-  this.name = 'DEMACrossover';
+  this.name = 'DEMARSICrossover';
 
   this.currentTrend;
   this.requiredHistory = 0;
