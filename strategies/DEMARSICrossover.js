@@ -19,7 +19,8 @@ method.init = function() {
 
 
   this.nextOperation = this.settings.firstTrade;
-  this.rsiBuyPoint = this.settings.rsiBuyPoint;
+  this.rsiReBuyPointLow = this.settings.rsiReBuyPointLow;
+  this.rsiReBuyPointHigh = this.settings.rsiReBuyPointHigh;
   this.rsiSellPoint = this.settings.rsiSellPoint;
 
   log.debug("Short DEMA size: "+this.settings.shortSize);
@@ -66,21 +67,35 @@ method.check = function(candle) {
   var message = '@ ' + price.toFixed(8);
 
 
-  //DEMA Golden Cross/Uptrend
+  //DEMA Golden Cross / Uptrend
   if(shortResult >  longResult) {
     log.debug('we are currently in uptrend', message);
 
-    this.currentTrend = 'up';
-    // If the next operation is a buy and RSI is below hte congured buy point
-    if(this.nextOperation == 'buy'  && rsiResult <= this.rsiBuyPoint ) {
+    // If the next operation is a buy and RSI is in the buy point range
+    if(this.nextOperation == 'buy'){
 
-      this.nextOperation = 'sell';
-      this.advice('long');
-      log.debug("The asset is not overbought")
-      log.debug("Going to buy");
 
+      //A Golden Cross has occurred buy
+      if(this.currentTrend == 'down'){
+
+        this.nextOperation = 'sell';
+        this.advice('long');
+
+        log.debug("Golden Cross");
+        log.debug("Going to buy");
+      }
+
+      // A rebuy point
+      else if (rsiResult >= this.rsiReBuyPointLow && rsiResult <= this.rsiReBuyPointHigh ){
+        this.nextOperation = 'sell';
+        this.advice('long');
+        log.debug("The asset is not overbought")
+        log.debug("Going to Rebuy in the uptrend");
+      }
 
     }
+
+    //Overbought let's dump it here and cash out.
     else if ( this.nextOperation == 'sell' && rsiResult >= this.rsiSellPoint ){
 
       this.nextOperation = 'buy';
@@ -89,20 +104,27 @@ method.check = function(candle) {
       log.debug("Going to sell");
 
     }
+
+    //Nothing to do
     else {
 
       log.debug("Nothing to buy");
       this.advice();
+
     }
 
+    this.currentTrend = 'up';
   }
 
 
+  // COD / Downtrend
   else if(longResult > shortResult) {
-    log.debug('we are currently in a downtrend', message);
-    this.currentTrend = 'down';
-    if(this.nextOperation == 'sell') {
 
+    log.debug('we are currently in a downtrend', message);
+
+    this.currentTrend = 'down';
+
+    if(this.nextOperation == 'sell') {
       this.nextOperation = 'buy';
       this.advice('short');
       log.debug("Going to sell");
@@ -113,7 +135,9 @@ method.check = function(candle) {
       this.advice();
     }
 
-  } else {
+  }
+
+  else {
     log.debug('we are currently not in an up or down trend', message);
     this.advice();
   }

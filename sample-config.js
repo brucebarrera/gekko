@@ -58,6 +58,15 @@ config.DEMACrossover = {
   longSize:34
 };
 
+config.DEMARSICrossover = {
+  firstTrade : "buy",
+  shortSize:9,
+  longSize:34,
+  rsiSize:14,
+  rsiSellPoint:75,
+  rsiReBuyPointLow:60,
+  rsiReBuyPointHigh:65,
+};
 
 // Exponential Moving Averages settings:
 config.DEMA = {

@@ -7,7 +7,8 @@ shortSize = 13
 longSize = 34
 
 rsiSize = 14
-rsiBuyPoint = 65
+rsiReBuyPointLow = 60
+rsiReBuyPointHigh = 65
 rsiSellPoint = 75
 
 [demaRSICrossover]
