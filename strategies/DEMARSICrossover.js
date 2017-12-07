@@ -44,15 +44,16 @@ method.update = function(candle) {
 method.log = function() {
   var shortDEMA = this.talibIndicators.shortDEMA;
   var longDEMA = this.talibIndicators.longDEMA;
+  var rsi = this.talibIndicators.rsi;
 
-
-  log.debug('Required history is: '+this.requiredHistory);
 
   log.debug('calculated DEMA properties for candle:');
 
   log.debug('\t shortDEMA :', shortDEMA.result);
 
   log.debug('\t', 'longDEMA:', longDEMA.result);
+
+  log.debug('\t', 'rsi:', rsi.result);
 }
 
 method.check = function(candle) {
@@ -75,6 +76,7 @@ method.check = function(candle) {
 
       this.nextOperation = 'sell';
       this.advice('long');
+      log.debug("The asset is not overbought")
       log.debug("Going to buy");
 
 
@@ -83,7 +85,7 @@ method.check = function(candle) {
 
       this.nextOperation = 'buy';
       this.advice('short');
-      log.debug("We are in an up trend but the asset appears to be overbought");
+      log.debug("The asset appears to be overbought");
       log.debug("Going to sell");
 
     }
@@ -101,6 +103,7 @@ method.check = function(candle) {
     this.currentTrend = 'down';
     if(this.nextOperation == 'sell') {
 
+      this.nextOperation = 'buy';
       this.advice('short');
       log.debug("Going to sell");
     }
