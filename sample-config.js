@@ -46,6 +46,21 @@ config.tradingAdvisor = {
   }
 }
 
+//WBM1
+
+config.WBM1 = {
+  firstTrade : "sell",
+  shortSize:9,
+  longSize:34,
+  rsiSize:14,
+  rsiSellPoint:80,
+  initialBuyPrice:0,
+  buyPrice : 0,
+  buyFee:0.15,
+  sellFee:0.15
+};
+
+
 // DEMACrossover settings:
 
 // Nothing to configure yet
@@ -53,7 +68,7 @@ config.tradingAdvisor = {
 // Tell the bot if the first trade should be a buy or sell
 
 config.DEMACrossover = {
-  firstTrade : "sell",
+  firstTrade : "buy",
   shortSize:9,
   longSize:34
 };
