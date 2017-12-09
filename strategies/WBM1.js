@@ -96,7 +96,7 @@ method.check = function(candle) {
     }
 
     //Overbought and we're in the money let's dump it here and cash out.
-    else if ( this.nextOperation == 'sell' && rsiResult >= this.rsiSellPoint && sellPrice > this.buyCandleClosePrice){
+    else if ( this.nextOperation == 'sell' && rsiResult >= this.rsiSellPoint && price > sellPrice){
 
       this.nextOperation = 'buy';
       this.advice('short');
