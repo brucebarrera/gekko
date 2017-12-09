@@ -57,7 +57,8 @@ config.WBM1 = {
   initialBuyPrice:0,
   buyPrice : 0,
   buyFee:0.15,
-  sellFee:0.15
+  sellFee:0.15,
+  candleTradeLag:5
 };
 
 
