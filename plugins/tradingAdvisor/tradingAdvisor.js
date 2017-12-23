@@ -90,4 +90,10 @@ Actor.prototype.relayAdvice = function(advice) {
 }
 
 
+Actor.prototype.processTrade = function(trade) {
+  if(this.method.processTrade){
+    this.method.processTrade(trade);
+  }
+}
+
 module.exports = Actor;
