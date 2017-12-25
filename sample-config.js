@@ -49,17 +49,20 @@ config.tradingAdvisor = {
 //WBM1
 
 config.WBM1 = {
+  tradeLimit: -1,
   firstTrade : "sell",
   shortSize:9,
   longSize:34,
   rsiSize:14,
   rsiSellPoint:80,
-  initialBuyPrice:0,
+  initialBuyPrice:0.02480000,
   buyFee:0.15,
   sellFee:0.15,
-  candleTradeLag:5
+  profitMarginPercentage:2,
+  enableBuyOnGC:true,
+  enableBuyLow:true,
+  rsiBuyPoint:30
 };
-
 
 // DEMACrossover settings:
 

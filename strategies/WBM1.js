@@ -112,7 +112,7 @@ method.check = function(candle) {
 
     // If the next operation is a buy and RSI is in the buy point range
     //A Golden Cross has occurred buy
-    if(this.nextOperation == 'buy' && this.currentTrend == 'down'){
+    if(this.nextOperation == 'buy' && this.settings.enableBuyOnGC && this.currentTrend == 'down'){
 
         this.nextOperation = 'sell';
         this.advice('long');
@@ -150,14 +150,26 @@ method.check = function(candle) {
   // COD / Downtrend
   else if(longResult > shortResult) {
 
+    log.debug('we are currently in a downtrend', message);
     if(this.currentTrend == 'up' &&  this.nextOperation == 'sell' && this.canSell(candle)) {
 
       this.nextOperation = 'buy';
       this.advice('short');
-      log.debug("Going to sell");
+      log.debug("COD Going to sell");
       this.tradeCount++;
       this.isTrading =  true;
     }
+
+    else if(this.nextOperation == 'buy' && this.canBuy(candle)){
+
+      this.nextOperation = 'sell';
+      this.advice('long');
+
+      log.debug("Going to buy at the dip");
+      this.tradeCount++;
+      this.isTrading =  true;
+    }
+
     else {
       log.debug("Nothing to sell");
       this.advice();
@@ -173,31 +185,59 @@ method.check = function(candle) {
 };
 
 
-method.canSell = function(candle){
+method.canBuy =  function(candle) {
 
-
-  if(!this.lastTrade ){
-
-    return this.buyPrice < candle.close;
-  }
-
-  if(this.lastTrade.action !== 'buy'){
+  if(!this.settings.enableBuyLow){
     return false;
   }
 
-  var currencyValue =  candle.close * this.lastTrade.portfolio.asset;
+  var rsiResult =  this.talibIndicators.rsi.result.outReal;
+  var rsiBuyPoint =  this.settings.rsiBuyPoint;
 
-  var sellAmount =  currencyValue - (currencyValue * (this.settings.sellFee / 100));
-  log.debug("Amount to Sell",sellAmount);
+  if(rsiBuyPoint > rsiResult){
+    log.debug("This asset is underbought we can buy!",'RSI:',rsiResult);
+    return true;
+  }
+
+  return false;
+};
+
+method.canSell = function(candle){
+
   var profitMargin =  this.settings.profitMarginPercentage / 100;
-  var buyAmount  = this.buyPrice * this.lastTrade.portfolio.asset;
-  log.debug("Buy Amount",buyAmount);
+  var potentialProfitMargin;
 
-  var potentialProfit = 1 - (buyAmount / sellAmount);
+  //no last trade info so we can't calculate fee cost but let's make sure we have the right profit margin at least
+  if(!this.lastTrade){
 
-  log.debug("potential profit :", potentialProfit," required profit margin", profitMargin);
+    potentialProfitMargin = 1 - (this.buyPrice / candle.close);
 
-  return potentialProfit > profitMargin;
+    log.debug("Potential profit margin",potentialProfitMargin);
+  }
+
+  else if( this.lastTrade.action !== 'buy' ){
+    return false;
+  }
+
+  //use this method when we have trade info to account for fees
+  else {
+
+    var currencyValue = candle.close * this.lastTrade.portfolio.asset;
+    var sellAmount = currencyValue - (currencyValue * (this.settings.sellFee / 100));
+
+    log.debug("Amount to Sell", sellAmount);
+
+    var buyAmount = this.buyPrice * this.lastTrade.portfolio.asset;
+
+    log.debug("Amount previously bought", buyAmount);
+
+    potentialProfitMargin = 1 - (buyAmount / sellAmount);
+
+    log.debug("potential profit :", potentialProfitMargin, " required profit margin", profitMargin);
+  }
+
+  return potentialProfitMargin > profitMargin;
+
 };
 
 
