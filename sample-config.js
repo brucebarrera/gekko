@@ -55,14 +55,16 @@ config.WBM1 = {
   longSize:34,
   rsiSize:14,
   rsiSellPoint:80,
-  initialBuyPrice:0.02480000,
+  initialBuyPrice:0.00000055,
   buyFee:0.15,
   sellFee:0.15,
-  profitMarginPercentage:2,
-  enableBuyOnGC:true,
+  profitMarginPercentage:1,
+  sellOnProfit:true,
+  enableBuyOnGC:false,
   enableBuyLow:true,
-  rsiBuyPoint:30
+  rsiBuyPoint:50
 };
+
 
 // DEMACrossover settings:
 

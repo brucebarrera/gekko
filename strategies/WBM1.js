@@ -105,8 +105,20 @@ method.check = function(candle) {
   var message = '@ ' + price.toFixed(8);
 
 
+  //User has requested that we take profit as soon as it is reached.
+  if(this.settings.sellOnProfit && this.canSell(candle)){
+    log.debug("Desired profit has been reached!");
+
+    this.nextOperation = 'buy';
+    this.advice('short');
+
+    log.debug("Going to sell");
+    this.tradeCount++;
+    this.isTrading =  true;
+  }
+
   //DEMA Golden Cross / Uptrend
-  if(shortResult >  longResult) {
+  else if(shortResult >  longResult) {
 
     log.debug('we are currently in uptrend', message);
 

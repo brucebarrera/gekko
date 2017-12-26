@@ -18,6 +18,8 @@ buyFee = 0.15
 sellFee = 0.15
 profitMarginPercentage = 2
 
+sellOnProfit = true
+
 # Buy on a GC?
 enableBuyOnGC =  true
 
