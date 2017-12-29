@@ -71,11 +71,24 @@ method.processTrade =  function(trade){
 
     this.isTrading =  false;
 
+
+    if(trade.price == 0){
+      log.debug("The price of the trade is zero. This trade is invalid most likely due to a cancel. ");
+      log.debug("Going to ignore this trade info and proceed.");
+      return;
+    }
+
+
     this.lastTrade =  trade;
 
-
+    //Resetting
     if(trade.action == 'buy'){
       this.buyPrice = trade.price;
+      this.nextOperation = 'sell'
+    }
+    else if(trade.action == 'sell'){
+      this.buyPrice = trade.price;
+      this.nextOperation = 'buy'
     }
 
     log.debug("\t","Trade info: " ,trade);
@@ -92,6 +105,19 @@ method.check = function(candle) {
   }
 
   if(this.isTrading == true){
+
+    //Let's check to see if there has been any slippage, if so let's cancel this order:
+    if(this.nextOperation == 'sell' && !this.canSell(candle)){
+      log.debug("Looks like slippage has occurred and the sell trade request is no longer favorable.  Let's attempt a cancel!");
+      this.advice('cancel');
+      return;
+    }
+    else if(this.nextOperation == 'buy' && !this.settings.enableBuyOnGC && !this.canBuy(candle)){
+      log.debug("Looks like slippage has occurred and the buy trade request is no longer favorable.  Let's attempt a cancel!");
+      this.advice('cancel');
+      return;
+    }
+
     log.debug("A trade is currently in progress. Waiting for trade to complete.");
     return;
   }
@@ -106,10 +132,9 @@ method.check = function(candle) {
 
 
   //User has requested that we take profit as soon as it is reached.
-  if(this.settings.sellOnProfit && this.canSell(candle)){
+  if(this.nextOperation == 'sell' && this.settings.sellOnProfit && this.canSell(candle)){
     log.debug("Desired profit has been reached!");
 
-    this.nextOperation = 'buy';
     this.advice('short');
 
     log.debug("Going to sell");
@@ -126,7 +151,6 @@ method.check = function(candle) {
     //A Golden Cross has occurred buy
     if(this.nextOperation == 'buy' && this.settings.enableBuyOnGC && this.currentTrend == 'down'){
 
-        this.nextOperation = 'sell';
         this.advice('long');
 
         log.debug("Golden Cross");
@@ -138,7 +162,7 @@ method.check = function(candle) {
     //Overbought and we're in the money let's dump it here and cash out.
     else if ( this.nextOperation == 'sell' && rsiResult >= this.rsiSellPoint && this.canSell(candle)){
 
-      this.nextOperation = 'buy';
+
       this.advice('short');
 
       log.debug("The asset appears to be overbought");
@@ -165,16 +189,14 @@ method.check = function(candle) {
     log.debug('we are currently in a downtrend', message);
     if(this.currentTrend == 'up' &&  this.nextOperation == 'sell' && this.canSell(candle)) {
 
-      this.nextOperation = 'buy';
       this.advice('short');
       log.debug("COD Going to sell");
       this.tradeCount++;
       this.isTrading =  true;
     }
 
-    else if(this.nextOperation == 'buy' && this.canBuy(candle)){
+    else if(this.nextOperation == 'buy' && !this.settings.buy && this.canBuy(candle)){
 
-      this.nextOperation = 'sell';
       this.advice('long');
 
       log.debug("Going to buy at the dip");
@@ -215,6 +237,7 @@ method.canBuy =  function(candle) {
 };
 
 method.canSell = function(candle){
+
 
   var profitMargin =  this.settings.profitMarginPercentage / 100;
   var potentialProfitMargin;
