@@ -104,21 +104,9 @@ method.check = function(candle) {
     return;
   }
 
-  if(this.isTrading == true){
 
-    //Let's check to see if there has been any slippage, if so let's cancel this order:
-    if(this.nextOperation == 'sell' && !this.canSell(candle)){
-      log.debug("Looks like slippage has occurred and the sell trade request is no longer favorable.  Let's attempt a cancel!");
-      this.advice('cancel');
-      return;
-    }
-    else if(this.nextOperation == 'buy' && !this.settings.enableBuyOnGC && !this.canBuy(candle)){
-      log.debug("Looks like slippage has occurred and the buy trade request is no longer favorable.  Let's attempt a cancel!");
-      this.advice('cancel');
-      return;
-    }
-
-    log.debug("A trade is currently in progress. Waiting for trade to complete.");
+  //Check to see if we should cancel any orders
+  if(this.checkSlippage(candle)){
     return;
   }
 
@@ -160,8 +148,7 @@ method.check = function(candle) {
     }
 
     //Overbought and we're in the money let's dump it here and cash out.
-    else if ( this.nextOperation == 'sell' && rsiResult >= this.rsiSellPoint && this.canSell(candle)){
-
+    else if (this.isOverbought() ){
 
       this.advice('short');
 
@@ -236,6 +223,39 @@ method.canBuy =  function(candle) {
   return false;
 };
 
+
+method.isOverbought = function(){
+
+  if(this.settings.sellOnOverbought == false){
+    return false;
+  }
+
+  var rsiResult =  this.talibIndicators.rsi.result.outReal;
+  return this.nextOperation == 'sell' && rsiResult >= this.rsiSellPoint;
+};
+
+method.checkSlippage =  function(candle){
+
+  if(this.isTrading == true){
+
+    //Let's check to see if there has been any slippage, if so let's cancel this order:
+    if(this.nextOperation == 'sell' && !this.isOverbought() && !this.canSell(candle)){
+      log.debug("Looks like slippage has occurred and the sell trade request is no longer favorable.  Let's attempt a cancel!");
+      this.advice('cancel');
+      return true;
+    }
+    else if(this.nextOperation == 'buy' && !this.settings.enableBuyOnGC && !this.canBuy(candle)){
+      log.debug("Looks like slippage has occurred and the buy trade request is no longer favorable.  Let's attempt a cancel!");
+      this.advice('cancel');
+      return true;
+    }
+
+    log.debug("A trade is currently in progress. Waiting for trade to complete.");
+    return true;
+  }
+  return false;
+};
+
 method.canSell = function(candle){
 
 
@@ -272,7 +292,6 @@ method.canSell = function(candle){
   }
 
   return potentialProfitMargin > profitMargin;
-
 };
 
 
