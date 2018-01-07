@@ -10,7 +10,7 @@ shortSize = 9
 # long DEMA
 longSize = 34
 
-
+sellOnOverbought = true
 rsiSize = 14
 rsiSellPoint = 80
 initialBuyPrice = 0
