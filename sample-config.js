@@ -32,6 +32,7 @@ config.watch = {
 
 config.tradingAdvisor = {
   enabled: true,
+
   method: 'DEMACrossover',
   candleSize: 15,
   historySize: 432,
@@ -44,6 +45,7 @@ config.tradingAdvisor = {
     enabled: false,
     version: '0.8.7'
   }
+
 }
 
 //WBM1
@@ -334,6 +336,14 @@ config.pushbullet = {
   tag: '[GEKKO]'
 };
 
+config.kodi = {
+  // if you have a username & pass, add it like below
+  // http://user:pass@ip-or-hostname:8080/jsonrpc
+  host: 'http://ip-or-hostname:8080/jsonrpc',
+  enabled: false,
+  sendMessageOnStart: true,
+}
+
 config.ircbot = {
   enabled: false,
   emitUpdates: false,
@@ -440,7 +450,7 @@ config.sqlite = {
   dataDirectory: 'history',
   version: 0.1,
 
-  journalMode: 'WAL', // setting this to 'DEL' may prevent db locking on windows
+  journalMode: require('./web/isWindows.js') ? 'DELETE' : 'WAL',
 
   dependencies: []
 }
