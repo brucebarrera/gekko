@@ -3,6 +3,7 @@ var util = require('../../core/util.js');
 var config = util.getConfig();
 var dirs = util.dirs();
 
+
 var log = require(dirs.core + 'log');
 var Manager = require('./portfolioManager');
 
@@ -49,6 +50,11 @@ Trader.prototype.processAdvice = function(advice) {
       'Selling ', config.trader.asset
     );
     this.manager.trade('SELL');
+  }
+    else if(advice.recommendation == 'cancel'){
+      this.manager.cancelLastOrder(() => {
+        log.debug("Cancel request received. Canceling last order");
+      });
   }
 }
 

@@ -32,10 +32,62 @@ config.watch = {
 
 config.tradingAdvisor = {
   enabled: true,
-  method: 'MACD',
-  candleSize: 60,
-  historySize: 10,
+  method: 'DEMACrossover',
+  candleSize: 15,
+  historySize: 432,
+  adapter: 'sqlite',
+  talib: {
+    enabled: true,
+    version: '1.0.2'
+  },
+  tulind: {
+    enabled: false,
+    version: '0.8.7'
+  }
+
 }
+
+//WBM1
+
+config.WBM1 = {
+  tradeLimit: -1,
+  firstTrade : "sell",
+  shortSize:9,
+  longSize:34,
+  rsiSize:14,
+  rsiSellPoint:80,
+  initialBuyPrice:0.00000055,
+  buyFee:0.15,
+  sellFee:0.15,
+  profitMarginPercentage:1,
+  sellOnProfit:true,
+  enableBuyOnGC:false,
+  enableBuyLow:true,
+  rsiBuyPoint:50
+};
+
+
+// DEMACrossover settings:
+
+// Nothing to configure yet
+// Please select 1 min interval and require a history of at least 34 candles
+// Tell the bot if the first trade should be a buy or sell
+
+config.DEMACrossover = {
+  firstTrade : "buy",
+  shortSize:9,
+  longSize:34
+};
+
+config.DEMARSICrossover = {
+  firstTrade : "buy",
+  shortSize:9,
+  longSize:34,
+  rsiSize:14,
+  rsiSellPoint:75,
+  rsiReBuyPointLow:60,
+  rsiReBuyPointHigh:65,
+};
 
 // Exponential Moving Averages settings:
 config.DEMA = {
@@ -139,13 +191,13 @@ config.UO = {
 
 // CCI Settings
 config.CCI = {
-    constant: 0.015, // constant multiplier. 0.015 gets to around 70% fit
-    history: 90, // history size, make same or smaller than history
-    thresholds: {
-        up: 100, // fixed values for overbuy upward trajectory
-        down: -100, // fixed value for downward trajectory
-        persistence: 0 // filter spikes by adding extra filters candles
-    }
+  constant: 0.015, // constant multiplier. 0.015 gets to around 70% fit
+  history: 90, // history size, make same or smaller than history
+  thresholds: {
+    up: 100, // fixed values for overbuy upward trajectory
+    down: -100, // fixed value for downward trajectory
+    persistence: 0 // filter spikes by adding extra filters candles
+  }
 };
 
 // StochRSI settings
@@ -184,13 +236,13 @@ config['talib-macd'] = {
 
 // do you want Gekko to simulate the profit of the strategy's own advice?
 config.paperTrader = {
-  enabled: true,
+  enabled: false,
   // report the profit in the currency or the asset?
   reportInCurrency: true,
   // start balance, on what the current balance is compared with
   simulationBalance: {
     // these are in the unit types configured in the watcher.
-    asset: 1,
+    asset: 0,
     currency: 100,
   },
   // how much fee in % does each trade cost?
@@ -377,7 +429,7 @@ config.ifttt = {
 }
 
 config.candleWriter = {
-  enabled: false
+  enabled: true
 }
 
 config.adviceWriter = {
@@ -445,7 +497,7 @@ config.backtest = {
 config.importer = {
   daterange: {
     // NOTE: these dates are in UTC
-    from: "2017-11-01 00:00:00"
+    from: "2017-12-01 00:00:00"
   }
 }
 
@@ -460,6 +512,6 @@ config.importer = {
 // understand this.
 //
 // Not sure? Read this first: https://github.com/askmike/gekko/issues/201
-config['I understand that Gekko only automates MY OWN trading strategies'] = false;
+config['I understand that Gekko only automates MY OWN trading strategies'] = true;
 
 module.exports = config;
