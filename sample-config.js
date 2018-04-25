@@ -354,10 +354,8 @@ config.ircbot = {
 
 config.telegrambot = {
   enabled: false,
-  emitUpdates: false,
   token: 'YOUR_TELEGRAM_BOT_TOKEN',
-  botName: 'gekkobot'
-}
+};
 
 config.twitter = {
     // sends pushbullets if true
