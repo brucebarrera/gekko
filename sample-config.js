@@ -469,7 +469,7 @@ config.postgresql = {
 config.mongodb = {
   path: 'plugins/mongodb',
   version: 0.1,
-  connectionString: 'mongodb://mongodb/gekko', // connection to mongodb server
+  connectionString: 'mongodb://localhost/gekko', // connection to mongodb server
   dependencies: [{
     module: 'mongojs',
     version: '2.4.0'
@@ -485,6 +485,10 @@ config.mongodb = {
 
 config.backtest = {
   daterange: 'scan',
+// daterange: {
+//   from: "2018-03-01",
+//   to: "2018-04-28"
+//},
   batchSize: 50
 }
 
